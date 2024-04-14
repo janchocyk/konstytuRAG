@@ -1,43 +1,65 @@
 import streamlit as st
-import random
+from langchain.memory import ConversationBufferWindowMemory
+
 import time
+import logging
 from dotenv import load_dotenv
 
-from tool import konstytuRAG
-
-load_dotenv()
-chat = konstytuRAG()
-chat.init_rag_chain()
+from tool import konstytuRAG, customize_chat_history, test_prompt
 
 
-#     for word in response.split():
-#         yield word + " "
-#         time.sleep(0.05)
+def stream_generate(response: str):
+    for word in response.split():
+        yield word + " "
+        time.sleep(0.05)
 
 
-st.title("Simple chat")
+def main():
+    logging.basicConfig(filename=f'logs/chat_msgs.log', format='%(asctime)s %(message)s', level=logging.INFO)
 
-# Initialize chat history
-if "messages" not in st.session_state:
-    st.session_state.messages = []
+    load_dotenv()
+    chat = konstytuRAG()
+    chat.init_rag_chain()
 
-# Display chat messages from history on app rerun
-for message in st.session_state.messages:
-    with st.chat_message(message["role"]):
-        st.markdown(message["content"])
+    st.title('KonstytuRAG')
+    st.markdown(body='Poznaj chat-bot, którego celem jest udzielić odpowiedzi na pytania dotyczące treści konstytucji Polski.')
 
-# Accept user input
-if prompt := st.chat_input("What is up?"):
-    # Add user message to chat history
-    st.session_state.messages.append({"role": "human", "content": prompt})
-    # Display user message in chat message container
-    with st.chat_message("user"):
-        st.markdown(prompt)
+    if "buffer_memory" not in st.session_state:
+        st.session_state.buffer_memory = ConversationBufferWindowMemory(k=3, return_messages=True)
 
-    # Display assistant response in chat message container
-    with st.chat_message("assistant"):
-        response = st.write_stream(chat.get_answer(prompt, st.session_state.messages))
-        print('udało się')
-        print(st.session_state.messages)
-    # Add assistant response to chat history
-    st.session_state.messages.append({"role": "ai", "content": response})
+    # Initialize chat history
+    if "messages" not in st.session_state:
+        st.session_state.messages = []
+
+    # Display chat messages from history on app rerun
+    for message in st.session_state.messages:
+        with st.chat_message(message['role']):
+            st.markdown(message['content'])
+
+    # Accept user input
+    if prompt := st.chat_input("Co byś chciał/chciała się dowiedzieć?"):
+        # Add user message to chat history
+        st.session_state.messages.append({"role": "human", "content": prompt})
+        logging.info(f'Human: {prompt}')
+        # Display user message in chat message container
+        with st.chat_message("user"):
+            st.markdown(prompt)
+
+        # Display assistant response in chat message container
+        with st.chat_message("assistant"):            
+            answer, source = chat.get_answer(prompt, st.session_state.buffer_memory.load_memory_variables({})['history'])
+            response = st.write_stream(stream_generate(answer))
+            st.write(source)
+
+        # Add assistant response to chat history
+        st.session_state.messages.append({"role": "ai", "content": response})
+        # st.session_state.messages = customize_chat_history(st.session_state.messages)
+        st.session_state.buffer_memory.save_context({'input': prompt}, {'output': answer})
+        logging.info(f'AI: {response}')
+
+    if st.button('Nowy temat'):
+        st.rerun()
+
+
+if __name__ == '__main__':
+    main()
