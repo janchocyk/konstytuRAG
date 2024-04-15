@@ -67,7 +67,8 @@ def main():
             st.write(source)
 
         # Add assistant response to chat history
-        st.session_state.messages.append({"role": "ai", "content": response})
+        answer_to_write = answer + '\n' + source 
+        st.session_state.messages.append({"role": "ai", "content": answer_to_write})
         # st.session_state.messages = customize_chat_history(st.session_state.messages)
         st.session_state.buffer_memory.save_context({'input': prompt}, {'output': answer})
         logging.info(f'AI: {response}')
