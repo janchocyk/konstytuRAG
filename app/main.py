@@ -26,14 +26,11 @@ def main():
 
     st.title('KonstytuRAG')
     st.markdown(body='Poznaj chat-bot, którego celem jest udzielić odpowiedzi na pytania dotyczące treści konstytucji Polski.')
-    st.markdown(
-        body=
-        """Jeżeli chcesz uzyskać optymalne odpowiedzi od asystenta, to:
-        - zadawaj pojedyncze, konkretne pytania, dotyczące treści konstytucji
-        - dopytuj jeżeli asystent odpowiedział niedokładnie
-        - nie wysyłaj wiadomości powitalnych, tylko od razu zadawaj pytania
-        """
-    )
+    st.markdown(body='Jeżeli chcesz uzyskać optymalne odpowiedzi od asystenta, to:')
+    st.markdown(body='- zadawaj pojedyncze, konkretne pytania, dotyczące treści konstytucji')
+    st.markdown(body='- dopytuj jeżeli asystent odpowiedział niedokładnie')
+    st.markdown(body='- nie wysyłaj wiadomości powitalnych, tylko od razu zadawaj pytania')
+
     if "buffer_memory" not in st.session_state:
         st.session_state.buffer_memory = ConversationBufferWindowMemory(k=3, return_messages=True)
 
@@ -69,7 +66,6 @@ def main():
         # Add assistant response to chat history
         answer_to_write = answer + '\n' + source 
         st.session_state.messages.append({"role": "ai", "content": answer_to_write})
-        # st.session_state.messages = customize_chat_history(st.session_state.messages)
         st.session_state.buffer_memory.save_context({'input': prompt}, {'output': answer})
         logging.info(f'AI: {response}')
 
