@@ -8,3 +8,4 @@ sentence_transformers
 pinecone-client
 python-dotenv
 tiktoken
+regex
