@@ -1,10 +1,10 @@
 streamlit
 streamlit_chat
-langchain
-langchain-openai
-langchain_community
-langchain_pinecone
-sentence_transformers
+langchain == 0.1.15
+langchain-openai == 0.1.2
+langchain_community == 0.0.32
+langchain_pinecone == 0.1.0
+sentence_transformers == 2.6.1
 pinecone-client
 python-dotenv
 tiktoken
