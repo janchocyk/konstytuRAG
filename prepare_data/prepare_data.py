@@ -1,3 +1,21 @@
+"""
+Name: KonstytuRAG App (prepare_data.py)
+
+Description:
+Skrypt, który należy uruchomić zanim będziemy korzystać z 'main.py'. 
+Celem skryptu jest przetworzenie danych (konstytucja RP) i załadowanie ich do wektorowej
+bazy danych. Pamiętaj, że zanim wykonasz skrypt to:
+- Install all required libraries from the requirements.txt file.
+- Create a .env file and place it in the project's main folder.
+- Sign up for Pinecone and create a vector index (details in README.md), copy the API key.
+- Add variables named PINECONE_API_KEY to the .env file, set the keys as their values.
+- Run the following command in the main folder:
+    ```python prepare_data\prepare_data.py``` - Windows
+    ```python3 prepare_data/prepare_data.py``` - Linux
+Running this script creates a vector database and may take a few minutes.
+
+Author: Jan Chocyk
+"""
 import sys
 sys.path.append("..")
 
@@ -8,7 +26,7 @@ from langchain.embeddings import SentenceTransformerEmbeddings
 from langchain_pinecone import PineconeVectorStore
 
 
-def get_chunks(text, word):
+def get_chunks(text: str, word: str) -> list[str]:
     reg = fr'\b[A-Z]{word[1:]}\b'
     pattern = re.compile(reg)
     modified_text = re.sub(pattern, f'<split>{word}', text)

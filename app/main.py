@@ -60,7 +60,7 @@ def main():
     Description: The main function that constructs the chat interface from Streamlit components, initializes the RAG, 
     and handles the exchange of messages between the user and the chatbot.
     """
-    logging.basicConfig(filename=f'app/logs/chat.log', format='%(asctime)s %(message)s', level=logging.WARNING)
+    logging.basicConfig(filename=f'app/chat.log', format='%(asctime)s %(message)s', level=logging.WARNING)
 
     load_dotenv()
     chat = konstytuRAG()
