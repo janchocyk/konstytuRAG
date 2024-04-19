@@ -4,7 +4,7 @@ A web application that implements a chat interface where you can converse with a
 The RAG building technique was used, where the data on which the LLM bases its responses is the content of the constitution. 
 The chatbot additionally provides sources it relied on to build its response.
 
-### Uruchomienie:
+### RUN:
 1. Locally
 - Install all required libraries from the requirements.txt file
     ```pip install -r requirements.txt```
